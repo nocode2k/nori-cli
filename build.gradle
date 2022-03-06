@@ -1,0 +1,37 @@
+plugins {
+    id 'java'
+}
+
+group 'com.nocode'
+version '1.0.0'
+description "Nori CLI"
+
+apply plugin: 'java'
+compileJava {
+    options.encoding = "UTF-8"
+}
+
+compileTestJava {
+    options.encoding = "UTF-8"
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.apache.lucene:lucene-core:9.0.0'
+    implementation 'org.apache.lucene:lucene-analysis-common:9.0.0'
+    implementation 'org.apache.lucene:lucene-queryparser:9.0.0'
+    implementation 'org.apache.lucene:lucene-analysis-nori:9.0.0'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.13.1'
+    implementation 'commons-cli:commons-cli:1.5.0'
+    testImplementation 'org.apache.lucene:lucene-test-framework:9.0.0'
+}
+
+tasks.named('jar') {
+    manifest {
+        attributes('Implementation-Title': 'nori-cli',
+                'Implementation-Version': '1.0.0')
+    }
+}
