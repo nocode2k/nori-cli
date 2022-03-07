@@ -5,6 +5,7 @@ plugins {
 group 'com.nocode'
 version '1.0.0'
 description "Nori CLI"
+//mainClassName = 'com.nocode.cli.NoriCli'
 
 apply plugin: 'java'
 compileJava {
@@ -19,6 +20,23 @@ repositories {
     mavenCentral()
 }
 
+configurations {
+    generateConfig
+}
+
+
+jar {
+    manifest {
+        attributes 'Version': version, 'Main-Class': 'com.nocode.cli.NoriCli'
+    }
+    from {
+        configurations.compileClasspath.collect {
+            it.isDirectory() ? it : zipTree(it)
+        }
+    }
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
+
 dependencies {
     implementation 'org.apache.lucene:lucene-core:9.0.0'
     implementation 'org.apache.lucene:lucene-analysis-common:9.0.0'
@@ -27,11 +45,4 @@ dependencies {
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.13.1'
     implementation 'commons-cli:commons-cli:1.5.0'
     testImplementation 'org.apache.lucene:lucene-test-framework:9.0.0'
-}
-
-tasks.named('jar') {
-    manifest {
-        attributes('Implementation-Title': 'nori-cli',
-                'Implementation-Version': '1.0.0')
-    }
 }
