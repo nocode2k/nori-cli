@@ -49,8 +49,12 @@ public class NoriCli {
             String surface = charTermAttribute.toString();
 
             ArrayList<String> attrs = new ArrayList<>();
-            String pos = partOfSpeechAttribute.getLeftPOS().name();
+            String pos = partOfSpeechAttribute.getRightPOS().name();
             attrs.add(pos);
+            for (int i = attrs.size(); i < 3; i++) {
+                attrs.add("*");
+            }
+            attrs.add(surface);
             for (int i = attrs.size(); i < 7; i++) {
                 attrs.add("*");
             }
@@ -200,7 +204,7 @@ public class NoriCli {
 
         // read stdin
         try {
-            Scanner stdin = new Scanner(System.in);
+            Scanner stdin = new Scanner(System.in);            
             while (stdin.hasNextLine()) {
                 String text = stdin.nextLine();
                 List<Token> tokens = cli.tokenize(text);
