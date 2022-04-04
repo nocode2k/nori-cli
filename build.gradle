@@ -3,7 +3,7 @@ plugins {
 }
 
 group 'com.nocode'
-version '1.0.0'
+version '1.1.0'
 description "Nori CLI"
 
 apply plugin: 'java'
@@ -20,18 +20,18 @@ repositories {
 }
 
 dependencies {
-    implementation 'org.apache.lucene:lucene-core:9.0.0'
-    implementation 'org.apache.lucene:lucene-analysis-common:9.0.0'
-    implementation 'org.apache.lucene:lucene-queryparser:9.0.0'
-    implementation 'org.apache.lucene:lucene-analysis-nori:9.0.0'
+    implementation 'org.apache.lucene:lucene-core:9.1.0'
+    implementation 'org.apache.lucene:lucene-analysis-common:9.1.0'
+    implementation 'org.apache.lucene:lucene-queryparser:9.1.0'
+    implementation 'org.apache.lucene:lucene-analysis-nori:9.1.0'
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.13.1'
     implementation 'commons-cli:commons-cli:1.5.0'
-    testImplementation 'org.apache.lucene:lucene-test-framework:9.0.0'
+    testImplementation 'org.apache.lucene:lucene-test-framework:9.1.0'
 }
 
 tasks.named('jar') {
     manifest {
         attributes('Implementation-Title': 'nori-cli',
-                'Implementation-Version': '1.0.0')
+                'Implementation-Version': '1.1.0')
     }
 }
