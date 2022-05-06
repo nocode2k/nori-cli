@@ -2,6 +2,7 @@ package com.nocode.cli;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
 import org.apache.commons.cli.*;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.TokenStream;
@@ -235,7 +236,7 @@ public class NoriCli {
 
         // read stdin
         try {
-            Scanner stdin = new Scanner(System.in);            
+            Scanner stdin = new Scanner(System.in);
             while (stdin.hasNextLine()) {
                 String text = stdin.nextLine();
                 List<Token> tokens = cli.tokenize(text);
