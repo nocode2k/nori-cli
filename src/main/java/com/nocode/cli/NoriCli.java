@@ -6,27 +6,31 @@ import org.apache.commons.cli.*;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.ko.KoreanAnalyzer;
-import org.apache.lucene.analysis.ko.KoreanPartOfSpeechStopFilter;
 import org.apache.lucene.analysis.ko.KoreanTokenizer;
+import org.apache.lucene.analysis.ko.POS;
+import org.apache.lucene.analysis.ko.dict.UserDictionary;
 import org.apache.lucene.analysis.ko.tokenattributes.PartOfSpeechAttribute;
 import org.apache.lucene.analysis.ko.tokenattributes.ReadingAttribute;
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 public class NoriCli {
 
     private Analyzer analyzer;
 
-    public NoriCli(KoreanTokenizer.DecompoundMode mode) {
+    public NoriCli(KoreanTokenizer.DecompoundMode mode, UserDictionary userDict) {
+        final Set<POS.Tag> DEFAULT_STOP_TAGS =
+                new HashSet<>(
+                        Arrays.asList(
+                                POS.Tag.UNA,
+                                POS.Tag.NA));
         this.analyzer =
                 new KoreanAnalyzer(
-                        null,
+                        userDict,
                         mode,
-                        KoreanPartOfSpeechStopFilter.DEFAULT_STOP_TAGS,
+                        DEFAULT_STOP_TAGS,
                         false);
     }
 
@@ -114,6 +118,13 @@ public class NoriCli {
                         .build()
         );
         options.addOption(
+                Option.builder("u")
+                        .longOpt("user dictionary path")
+                        .hasArg()
+                        .desc("Specifies the file path of the user dictionary. default none.")
+                        .build()
+        );
+        options.addOption(
                 Option.builder("v")
                         .longOpt("version")
                         .desc("Print version.")
@@ -183,7 +194,27 @@ public class NoriCli {
             }
         }
 
-        NoriCli cli = new NoriCli(mode);
+        // User dictionary
+        UserDictionary userDictionary = null;
+        if (cmd.hasOption("u")) {
+            String userDictionaryPath = cmd.getOptionValue("u");
+            File dictionaryFile = new File(userDictionaryPath);
+            if(dictionaryFile.exists()) {
+                try {
+                    BufferedReader br
+                            = new BufferedReader(new FileReader(dictionaryFile));
+                    userDictionary = UserDictionary.open(br);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            } else {
+                System.out.printf("unexpected user dictionary file: %s\n", cmd.getOptionValue("u"));
+                hf.printHelp(String.format("%s [OPTIONS] [INPUT_FILE]", NoriCli.class.getPackage().getImplementationTitle()), options);
+                return;
+            }
+        }
+
+        NoriCli cli = new NoriCli(mode, userDictionary);
 
         // read file
         if (cmd.getArgs().length > 0) {
